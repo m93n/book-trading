@@ -16,7 +16,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = Account
-        fields = ('email', 'username', 'date_of_birth')
+        fields = ('email', 'username', 'date_of_birth', 'mobile_number')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -67,7 +67,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'date_of_birth', 'password1', 'password2'),
+            'fields': ('email', 'username', 'mobile_number', 'date_of_birth', 'password1', 'password2'),
         }),
     )
     search_fields = ('email', 'username', 'mobile_number')

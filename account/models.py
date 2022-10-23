@@ -25,11 +25,12 @@ class MyAccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, email, username, password):
+    def create_superuser(self, email, username, date_of_birth, password):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
             password = password,
+            date_of_birth = date_of_birth,
         )
         user.is_admin = True
         user.is_staff = True
