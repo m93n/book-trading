@@ -1,6 +1,10 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render
+from django.contrib import messages
+
+from account.models import Account
+
 
 # using custom User model that sets at settings
 User_Model = settings.AUTH_USER_MODEL
@@ -20,5 +24,27 @@ def login_view(request):
             return render(request, 'account/success.html')
     
     return render(request, 'account/sign-in.html')
+
+def signup_view(request):
+
+    if request.method == 'POST':
+        email = request.POST['email']
+        username = request.POST['username']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        if password != confirm_password:
+            messages.error(request, 'password and confiramtion password not match!!!')
+        
+        else:
+            user = Account.objects.create_user(email=email, username=username, password=password)
+        
+            return render(request, 'account/success.html', context={'user': user})
+
+    return render(request, 'account/sign-up.html')
+
+
+
+
         
 

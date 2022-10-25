@@ -132,3 +132,6 @@ dmypy.json
 account/migrations/
 users/migrations/
 books/migrations/
+
+#vscode
+.vscode/

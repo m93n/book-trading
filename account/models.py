@@ -7,30 +7,26 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 class MyAccountManager(BaseUserManager):
-    def create_user(self, email, username, date_of_birth, password=None):
+    def create_user(self, email, username, password=None):
         if not email:
             raise ValueError("User must have an email address")
         if not username:
             raise ValueError("User must have a username")
-        if not date_of_birth:
-            raise ValueError("User must have a date of birth")
 
         user = self.model(
             email = self.normalize_email(email),
             username = username,
-            date_of_birth = date_of_birth,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, email, username, date_of_birth, password):
+    def create_superuser(self, email, username, password):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
             password = password,
-            date_of_birth = date_of_birth,
         )
         user.is_admin = True
         user.is_staff = True
@@ -42,8 +38,8 @@ class Account(AbstractBaseUser):
     email           = models.EmailField(verbose_name='email', max_length=60, unique=True)
     username        = models.CharField(max_length=30, unique=True)
     full_name       = models.CharField(max_length=40, verbose_name='full name')
-    mobile_number   = models.CharField(max_length=15, unique=True)
-    date_of_birth   = models.DateField(verbose_name='date of birth')
+    mobile_number   = models.CharField(max_length=15, unique=True, null=True)
+    date_of_birth   = models.DateField(verbose_name='date of birth', null=True)
     date_joined     = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login      = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin        = models.BooleanField(default=False)
@@ -52,7 +48,7 @@ class Account(AbstractBaseUser):
     is_superuser    = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'date_of_birth']
+    REQUIRED_FIELDS = ['username',]
 
     objects = MyAccountManager()
 
