@@ -29,6 +29,7 @@ def signup_view(request):
 
     if request.method == 'POST':
         email = request.POST['email']
+        mobile_number = request.POST['mobile_number']
         username = request.POST['username']
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
@@ -37,7 +38,7 @@ def signup_view(request):
             messages.error(request, 'password and confiramtion password not match!!!')
         
         else:
-            user = Account.objects.create_user(email=email, username=username, password=password)
+            user = Account.objects.create_user(email=email, mobile_number=mobile_number, username=username, password=password)
         
             return render(request, 'account/success.html', context={'user': user})
 

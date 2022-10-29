@@ -1,32 +1,37 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
+from django.core.validators import RegexValidator
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 class MyAccountManager(BaseUserManager):
-    def create_user(self, email, username, password=None):
+    def create_user(self, email, mobile_number, username, password=None):
         if not email:
             raise ValueError("User must have an email address")
         if not username:
             raise ValueError("User must have a username")
+        if not mobile_number:
+            raise ValueError("User must have a mobile number")
+        
 
         user = self.model(
             email = self.normalize_email(email),
             username = username,
+            mobile_number = mobile_number
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
     
-    def create_superuser(self, email, username, password):
+    def create_superuser(self, email, mobile_number,username, password):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
             password = password,
+            mobile_number = mobile_number
         )
         user.is_admin = True
         user.is_staff = True
@@ -38,7 +43,8 @@ class Account(AbstractBaseUser):
     email           = models.EmailField(verbose_name='email', max_length=60, unique=True)
     username        = models.CharField(max_length=30, unique=True)
     full_name       = models.CharField(max_length=40, verbose_name='full name')
-    mobile_number   = models.CharField(max_length=15, unique=True, null=True)
+    mobile_number   = models.CharField(max_length=11, unique=True, validators=[RegexValidator(regex=r'09(\d{9})$')])
+    mobile_number_verified = models.BooleanField(default=False)
     date_of_birth   = models.DateField(verbose_name='date of birth', null=True)
     date_joined     = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login      = models.DateTimeField(verbose_name='last login', auto_now=True)
@@ -48,7 +54,7 @@ class Account(AbstractBaseUser):
     is_superuser    = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username',]
+    REQUIRED_FIELDS = ['username','mobile_number']
 
     objects = MyAccountManager()
 
