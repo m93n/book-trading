@@ -1,3 +1,5 @@
+import re
+from django.db import IntegrityError
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render
@@ -38,9 +40,25 @@ def signup_view(request):
             messages.error(request, 'password and confiramtion password not match!!!')
         
         else:
-            user = Account.objects.create_user(email=email, mobile_number=mobile_number, username=username, password=password)
+            try:
+                user = Account.objects.create_user(email=email, mobile_number=mobile_number, username=username, password=password)
+                
+                return render(request, 'account/success.html', context={'user': user})
+
+            except IntegrityError as e:
+                if 'Duplicate entry' in str(e):
+                    #find key error of IntegrityError for return that message
+                    error_message = e.args[1]
+                    key_index = error_message.find('key') + 4 # find index of key string and plus 4 for start from key value like mobile_number
+                    key = error_message[key_index:].replace("'", '').replace("_", ' ')
+                    
+                    error_message = error_message.replace("'" + f"{key}" + "'", '') # remove key from message for blow procces
+                    
+                    value_of_field = re.search('Duplicate entry(.*) for key ', error_message).group(1) #value of field that is couse for user exist error
+
+                    messages.error(request, message=f"user with {value_of_field} {key} is exist")
         
-            return render(request, 'account/success.html', context={'user': user})
+            
 
     return render(request, 'account/sign-up.html')
 
