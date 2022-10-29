@@ -1,5 +1,3 @@
-import re
-from django.db import IntegrityError
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render
@@ -37,29 +35,21 @@ def signup_view(request):
         confirm_password = request.POST['confirm_password']
 
         if password != confirm_password:
-            messages.error(request, 'password and confiramtion password not match!!!')
+            messages.error(request, 'password and confiramtion password does not match !!!')
         
-        else:
-            try:
-                user = Account.objects.create_user(email=email, mobile_number=mobile_number, username=username, password=password)
-                
-                return render(request, 'account/success.html', context={'user': user})
-
-            except IntegrityError as e:
-                if 'Duplicate entry' in str(e):
-                    #find key error of IntegrityError for return that message
-                    error_message = e.args[1]
-                    key_index = error_message.find('key') + 4 # find index of key string and plus 4 for start from key value like mobile_number
-                    key = error_message[key_index:].replace("'", '').replace("_", ' ')
-                    
-                    error_message = error_message.replace("'" + f"{key}" + "'", '') # remove key from message for blow procces
-                    
-                    value_of_field = re.search('Duplicate entry(.*) for key ', error_message).group(1) #value of field that is couse for user exist error
-
-                    messages.error(request, message=f"user with {value_of_field} {key} is exist")
+        if Account.objects.filter(email=email):
+            messages.error(request, f'user with {email} email is exist !!!')
         
+        if Account.objects.filter(username=username):
+            messages.error(request, f'user with {username} username is exist !!!')
             
+        if Account.objects.filter(mobile_number=mobile_number):
+            messages.error(request, f'user with {mobile_number} mobile_number is exist !!!')
 
+        else:
+            user = Account.objects.create_user(email=email, mobile_number=mobile_number, username=username, password=password)
+            return render(request, 'account/success.html', context={'user': user})
+        
     return render(request, 'account/sign-up.html')
 
 
