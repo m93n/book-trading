@@ -149,3 +149,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # API key for sms service kavenegar
 KAVENEGAR_APIKEY = 'api-key'
 
+
+TWILIO_ACCOUNT_SID = 'ACc43bd09bec2ca2527749c98711ade5b0'
+TWILIO_AUTH_TOKEN = '051ca5c484a52247f693ce0993490268'

@@ -8,6 +8,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.conf import settings
 
+import os
+from twilio.rest import Client
+
 import kavenegar
 
 UserModel = get_user_model()
@@ -17,20 +20,31 @@ class PasswordResetForm(forms.Form):
                                    validators=[RegexValidator(regex=r'09(\d{9})$')])
 
     def send_sms(self, mobile_number, reset_link):
-        try:
-            api = kavenegar.KavenegarAPI(settings.KAVENEGAR_APIKEY)
-            message = f'برای بازیابی رمز عبور روی لینک زیر کلیک کنید \n {reset_link}'
-            params = {
-                'sender': 'booktrader',
-                'receptor': mobile_number,
-                'message': message,
-            }
-            response = api.sms_send(params)
-            print(response)
-        except kavenegar.APIException as e:
-            print(e)
-        except kavenegar.HTTPException as e:
-            print(e)
+        # try:
+        #     api = kavenegar.KavenegarAPI(settings.KAVENEGAR_APIKEY)
+        #     message = f'برای بازیابی رمز عبور روی لینک زیر کلیک کنید \n {reset_link}'
+        #     params = {
+        #         'sender': 'booktrader',
+        #         'receptor': mobile_number,
+        #         'message': message,
+        #     }
+        #     response = api.sms_send(params)
+        #     print(response)
+        # except kavenegar.APIException as e:
+        #     print(e)
+        # except kavenegar.HTTPException as e:
+        #     print(e)
+        account_sid = settings.TWILIO_ACCOUNT_SID
+        auth_token = settings.TWILIO_AUTH_TOKEN
+        client = Client(account_sid, auth_token)
+
+        message = client.messages.create(
+                            body=f'برای بازیابی رمز عبور روی لینک زیر کلیک کنید \n {reset_link}',
+                            from_='+989100697362',
+                            to=f'+98{mobile_number[1:]}'
+                        )
+
+        print(message.sid)
 
     def get_users(self, mobile_number):
         return UserModel.objects.get(mobile_number=mobile_number)
