@@ -28,7 +28,7 @@ class MyAccountManager(BaseUserManager):
     
     def create_superuser(self, email, mobile_number,username, password):
         user = self.create_user(
-            email = self.normalize_email(email),
+            email    = self.normalize_email(email),
             username = username,
             password = password,
             mobile_number = mobile_number
@@ -46,6 +46,8 @@ class Account(AbstractBaseUser):
     mobile_number   = models.CharField(max_length=11, unique=True, validators=[RegexValidator(regex=r'09(\d{9})$')])
     mobile_number_verified = models.BooleanField(default=False)
     date_of_birth   = models.DateField(verbose_name='date of birth', null=True)
+    home_address    = models.TextField()
+    postal_code     = models.CharField(max_length=15)
     date_joined     = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login      = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin        = models.BooleanField(default=False)
