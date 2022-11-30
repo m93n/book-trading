@@ -14,7 +14,6 @@ class UserInfo(models.Model):
 
 class Post(models.Model):
     user = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
-    source = models.ForeignKey(Book, on_delete=models.CASCADE, null=True, blank=True)
     text = models.TextField()
     src = models.ImageField()
     hashtag = models.ManyToManyField(HashTag, blank=True)
