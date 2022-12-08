@@ -3,10 +3,17 @@ from django.conf import settings
 
 User_Model = settings.AUTH_USER_MODEL
 
+class Category(models.Model):
+    name = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
+
 class Book(models.Model):
     image = models.ImageField(upload_to="images/")
     name = models.CharField(max_length=30)
     introduction = models.TextField()
+    category = models.ManyToManyField(Category)
 
     def __str__(self):
         return self.name
