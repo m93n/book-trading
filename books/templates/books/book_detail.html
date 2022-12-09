@@ -1,0 +1,14 @@
+<h1>Books detail</h1>
+{% if book %}
+<ul>{{book}}
+    <li>
+    <ul>categories=
+        {% for category in book.category.all %}
+        <li>
+            {{category}}
+        </li>
+        {% endfor %}
+    </ul>
+</li>
+</ul>
+{% endif %}
