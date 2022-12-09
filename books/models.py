@@ -9,15 +9,39 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class Book(models.Model):
-    image = models.ImageField(upload_to="images/")
-    name = models.CharField(max_length=30)
-    introduction = models.TextField()
-    category = models.ManyToManyField(Category)
+class Author(models.Model):
+    name = models.CharField(max_length=15)
 
     def __str__(self):
         return self.name
 
+class Translator(models.Model):
+    name = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
+
+class Language(models.Model):
+    language = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.language
+
+class Book(models.Model):
+    image = models.ImageField(upload_to="images/", blank=True)
+    name = models.CharField(max_length=30)
+    introduction = models.TextField()
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    translated = models.BooleanField(default=False)
+    categories = models.ManyToManyField(Category)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    translators = models.ManyToManyField(Translator, blank=True)
+    Release_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
 
 
 #// FUTURE UPDATES

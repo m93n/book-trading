@@ -135,3 +135,6 @@ books/migrations/
 
 #vscode
 .vscode/
+
+#images
+images
