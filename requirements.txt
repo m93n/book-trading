@@ -2,8 +2,13 @@ asgiref==3.5.2
 backports.zoneinfo==0.2.1
 Django==4.1.1
 djangorestframework==3.13.1
+firebase-admin
+ippanel
+mailchimp-transactional
 mysqlclient==2.1.1
 Pillow==9.2.0
 pytz==2022.2.1
+sendgrid
 sqlparse==0.4.2
+twilio
 tzdata==2022.2

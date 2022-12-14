@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     # my apps
     'books',
     'users',
-    'account'
+    'account',
+    'communication_app',
 ]
 
 REST_FRAMEWORK = {
