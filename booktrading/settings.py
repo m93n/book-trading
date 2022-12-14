@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'users',
     'account',
     'communication_app',
+    'notification',
 ]
 
 REST_FRAMEWORK = {

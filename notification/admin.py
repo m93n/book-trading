@@ -1,0 +1,23 @@
+from django.contrib import admin
+from . import models as Nmodels 
+
+admin.site.register(Nmodels.MultiNotify)
+admin.site.register(Nmodels.LogNotification)
+admin.site.register(Nmodels.EmailTemplate)
+admin.site.register(Nmodels.SMSTemplate)
+admin.site.register(Nmodels.FCMPushNotification)
+admin.site.register(Nmodels.PushNoticationTemplate)
+admin.site.register(Nmodels.FCMOptions)
+admin.site.register(Nmodels.WebpushConfig)
+admin.site.register(Nmodels.WebpushFCMOptions)
+admin.site.register(Nmodels.WebpushNotification)
+admin.site.register(Nmodels.WebpushNotificationAction)
+admin.site.register(Nmodels.DeviceToken)
+admin.site.register(Nmodels.Topic)
+admin.site.register(Nmodels.Condition)
+admin.site.register(Nmodels.Time_To_Send)
+admin.site.register(Nmodels.Language)
+admin.site.register(Nmodels.AndroidConfig)
+admin.site.register(Nmodels.AndroidNotification)
+admin.site.register(Nmodels.AndroidFCMOptions)
+admin.site.register(Nmodels.LightSettings)

@@ -1,0 +1,187 @@
+
+
+class Notification:
+  
+    def create_notification(self):
+        """
+        Create firebase_admin.message parameters & instance of that
+        """
+        title = self.notification.title
+        body = self.notification.body
+        image = self.notification.image
+        dataObject = self.notification.data
+        analytics_label = self.notification.fcm_options
+        topic = self.notification.topic
+        condition = self.notification.condition
+
+        web = self.notification.webpush
+        headers = web.headers
+        web_title = web.webpush_notification.title
+        web_body = web.webpush_notification.body
+        web_icon = web.webpush_notification.icon
+        action = web.webpush_notification.actions.action
+        action_title = web.webpush_notification.actions.title
+        action_icon = web.webpush_notification.actions.icon
+        badge = web.webpush_notification.badge
+        web_data = web.webpush_notification.data
+        direction = web.webpush_notification.direction
+        web_image = web.webpush_notification.image
+        lang = web.webpush_notification.language
+        require_interaction = web.webpush_notification.require_interaction
+        renotify = web.webpush_notification.renotify
+        silent = web.webpush_notification.silent
+        web_tag = web.webpush_notification.web_tag
+        timestamp_millis = web.webpush_notification.timestamp_millis
+        custom_data = web.webpush_notification.custom_data
+        web_link = web.fcm_options.link
+
+        android = self.notification.android
+        collapse_key = android.collapse_key
+        priority = android.priority
+        ttl = android.ttl
+        restricted_package_name = android.restricted_package_name
+        android_data = android.data
+        android_title = android.android_notification.title
+        android_body = android.android_notification.body
+        android_icon = android.android_notification.icon
+        sound_file = android.android_notification.sound
+        android_tag = android.android_notification.tag
+        android_image = android.android_notification.image
+        ticker = android.android_notification.ticker
+        sticky = android.android_notification.sticky
+        event_timestamp = android.android_notification.event_time
+        local_only = android.android_notification.local_only
+        notify_priority = android.android_notification.notification_priority
+        vibrate_timings_millis = android.android_notification.vibrate_timings_millis
+        default_vibrate_timings = android.android_notification.default_vibrate_timings
+        default_sound = android.android_notification.default_sound
+        color = android.android_notification.light_settings.color
+        light_on_duration_millis = android.android_notification.light_settings.light_on_duration_millis
+        light_off_duration_millis = android.android_notification.light_settings.light_off_duration_millis
+        default_light_settings = android.android_notification.default_light_settings
+        visibility = android.android_notification.visibility
+        notification_count = android.android_notification.notification_count
+        analytics_label_android = android.android_notification.fcm_options.analytics_label
+        click_action = android.android_notification.click_action
+        body_loc_key = android.android_notification.body_loc_key
+        body_loc_args = android.android_notification.body_loc_args
+        title_loc_key = android.android_notification.title_loc_key
+        title_loc_args = android.android_notification.title_loc_args
+        channel_id = android.android_notification.channel_id
+
+        
+
+        notification = messaging.Notification(title=title, body=body, image=image)
+        fcm_options = messaging.FCMOptions(analytics_label=analytics_label)
+
+        webpush = messaging.WebpushConfig(
+            headers=headers,
+            notification=messaging.WebpushNotification(title=web_title, body=web_body, icon=web_icon,
+                                actions=messaging.WebpushNotificationAction(action=action, title=action_title, icon=action_icon),
+                                badge=badge, data=web_data, direction=direction, image=web_image, language=lang, require_interaction=require_interaction, 
+                                renotify=renotify, silent=silent, tag=web_tag, timestamp_millis=timestamp_millis, custom_data=custom_data
+                                ),
+            fcm_options=messaging.WebpushFCMOptions(link=web_link)
+        )
+
+        androidpush = messaging.AndroidConfig(
+            collapse_key=collapse_key, priority=priority, ttl=ttl, restricted_package_name=restricted_package_name,
+            notification=messaging.AndroidNotification(title=android_title, body=android_body, icon=android_icon, sound=sound_file, tag=android_tag, image=android_image,
+                                        ticker=ticker, sticky=sticky, event_timestamp=event_timestamp, local_only=local_only, priority=notify_priority,
+                                        vibrate_timings_millis=vibrate_timings_millis, default_vibrate_timings=default_vibrate_timings, default_sound=default_sound,
+                                        light_settings=messaging.LightSettings(color=color, light_on_duration_millis=light_on_duration_millis,
+                                                                            light_off_duration_millis=light_off_duration_millis),
+                                        default_light_settings=default_light_settings, visibility=visibility, notification_count=notification_count,
+                                        click_action=click_action, body_loc_key=body_loc_key, body_loc_args=body_loc_args, title_loc_key=title_loc_key,
+                                        title_loc_args=title_loc_args, channel_id=channel_id
+                                ),
+            fcm_options=messaging.AndroidFCMOptions(analytics_label=analytics_label_android)
+        )
+
+
+    # -----------------------------------------------------------
+        
+        self.maessage = messaging.Message(
+            notification=notification,
+            webpush=webpush,
+            android=androidpush,
+            data=dataObject,
+            fcm_options=fcm_options,
+            tokens=self.token,
+            topic=topic,
+            condition=condition
+    )
+
+    def send(self):
+        """
+        Call send_multicast method of firebase_admin.message and returns response
+        """
+        response = messaging.send_multicast(self.messaging)
+        print(response)
+        return response
+
+
+
+
+
+class Schedule(Email, Sms, Notification):
+    """
+    A class is subclass of Email, Sms, Notification
+    It used to call that classes for send schedule message or notification
+    ...
+
+    Attributes
+    ----------
+    notify_name : str,
+        name of multinotify (is unique)
+
+    Methods
+    -------
+    start()
+        queryset to MultiNotify models and run methods of Email, Sms, Notification classes
+        return response of that method
+    """
+    def __init__(self, notify_name):
+        """
+        Parameters
+        ----------
+        notify_name : str,
+            name of multinotify (is unique)
+        """
+        self.notify_name = notify_name
+
+    def start(self):
+        """        
+        Queryset to MultiNotify models and run methods of Email, Sms, Notification classes
+
+        If (email or sms or notification) field isn't value, The relevant class is not called
+
+        returns response of above classes methods
+        """
+        self.service = ''
+        multinotify = MultiNotify.objects.filter(triggertype='schedule').filter(notify_name=self.notify_name)
+        for receiver in multinotify:
+            self.email = receiver.email
+            self.sms = receiver.sms
+            self.notification = receiver.notification
+            if self.email != None:
+                self.receiver_email = self.email.email
+                Email.create_email(self)
+                email_response = Email.send(self)
+            
+            if self.sms != None:
+                self.phone_number = self.sms.phone_number
+                Sms.create_sms(self)
+                sms_response = Sms.send(self)
+                
+            if self.notification != None:
+                self.token = self.notification.token.token
+                Notification.create_notification(self)
+                notification_response = Notification.send(self)
+
+
+        return {'email_response':email_response,
+                'sms_response':sms_response,
+                'notification_response':notification_response}
+
+
